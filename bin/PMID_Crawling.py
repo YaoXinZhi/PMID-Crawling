@@ -35,6 +35,30 @@ def title_pro(title: str):
     title = title.lower()
     return title
 
+def title_punc_pro(title: str):
+    # punc_rep = {'-': '-', '(': '%28', ',': '%2C', ')': '%29', '.': '.',
+    #             ';': '%3B', "'": '%27', '/': '%2F', ':': '%3A', '+': '%2B',
+    #             '{': '%7B', '}': '%7D', '?': '%3F', '"': ':', '>': '>',
+    #             '&': '%26', '[': '%5B', ']': '%5D', '`': '%60', '_': '_',
+    #             '\\': '%5C', '~': '~', '!': '%21', '#': '%23', '$': '%24',
+    #             '%': '%25', "*": '*', '<': '<', '=': '%3D', '@': '%40',
+    #             '^': '%5E', '|': '%7C'}
+    # '%': '%25',
+    punc_rep = {'(': '%28', ',': '%2C', ')': '%29', '+': '%2B',
+                ';': '%3B', "'": '%27', '/': '%2F', ':': '%3A',
+                '{': '%7B', '}': '%7D', '?': '%3F', '|': '%7C',
+                '&': '%26', '[': '%5B', ']': '%5D', '`': '%60',
+                '\\': '%5C', '!': '%21', '#': '%23', '$': '%24',
+                '=': '%3D', '@': '%40', '^': '%5E'}
+    puncs = list(punc_rep.keys())
+    title = title.replace('%', '%25')
+    for pun in puncs:
+        if pun in title:
+            title = title.replace(pun, punc_rep[pun])
+    title = title.replace(' ', '+')
+    return title
+
+
 def extract_PMID(soup):
     try:
         for li in soup.find(attrs={'class':'ncbi-inline-list'}).children:
@@ -63,7 +87,8 @@ def main(abs_file: str, out: str):
                 print('已经爬取{0}篇PMID, 用时{1:.2f}s'.format(count, end_time-start_time))
             l = line.strip()
             title = l.split('\t')[0]
-            title = title_pro(title)
+            # title = title_pro(title)
+            title = title_punc_pro(title)
             url = base_url + title.replace(' ', '+')
             soup = page_parser(url)
             PMID = extract_PMID(soup)
@@ -81,34 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', dest='out', type=str, required=True)
     args = parser.parse_args()
 
-    # abs_file = '../data/reference.table.tail.txt'
-    # out = '../data/reference_PMID.table.tail.txt'
     main(args.abs_file, args.out)
 
 
-"""
-- -
-, %2C
-( %28
-) %29
-. .
-; %3B
-' %27
-/ %2F
-Isolation and characterization of cDNA clones encoding cdc2 homologues from Oryza sativa: a functional homologue and cognate variants
-Chalk5 encodes a vacuolar H+-translocating pyrophosphatase influencing grain chalkiness in rice
-Cytochrome P450 family member CYP704B2 catalyzes the {omega}-hydroxylation of fatty acids and is required for anther cutin biosynthesis and pollen exine formation in rice
-Cytochrome P450 family member CYP704B2 catalyzes the {omega}-hydroxylation of fatty acids and is required for anther cutin biosynthesis and pollen exine formation in rice
-The same nuclear proteins bind to the 5?-flanking regions of genes for the rice seed storage protein: 16 kDa albumin, 13 kDa prolamin and type II glutelin
-Morphological and molecular characterization of a new frizzy panicle mutant, "fzp-9(t)", in rice (Oryza sativa L.)
-Structural and enzymatic characterization of Os3BGlu6, a rice beta-glucosidase hydrolyzing hydrophobic glycosides and (1->3)- and (1->2)-linked disaccharides
-Heterologous expression of a rice syntaxin-related protein KNOLLE gene (<I>OsKNOLLE</I>) in yeast and its functional analysis in the role of abiotic stress
-Two types of replication protein A 70 kDa subunit in rice, Oryza sativa: molecular cloning, characterization, and cellular & tissue distribution
-A Rice HAL2-like Gene Encodes a Ca[IMAGE]-sensitive 3`(2`),5`-Diphosphonucleoside 3`(2`)-Phosphohydrolase and Complements Yeast met22 and Escherichia coli cysQ Mutations
-A Rice HAL2-like Gene Encodes a Ca[IMAGE]-sensitive 3`(2`),5`-Diphosphonucleoside 3`(2`)-Phosphohydrolase and Complements Yeast met22 and Escherichia coli cysQ Mutations
-A Rice HAL2-like Gene Encodes a Ca[IMAGE]-sensitive 3`(2`),5`-Diphosphonucleoside 3`(2`)-Phosphohydrolase and Complements Yeast met22 and Escherichia coli cysQ Mutations
-Rice_Phospho 1.0: a new rice-specific SVM predictor for protein phosphorylation sites.
-\Rice calcium-dependent protein kinase OsCPK17 targets plasma membrane intrinsic protein and sucrose phosphate synthase and is required for a proper cold stress response.
-Chromatin states responsible for the regulation of differentially expressed genes under (60)Co~ ray radiation in rice.
-"""
 
