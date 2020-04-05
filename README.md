@@ -1,2 +1,8 @@
-# PMID-Crawling
-根据titile信息 爬取PMID
+# PMID-Crawling  
+根据titile信息 爬取PMID  
+根据titile信息 爬取PMID 会有1%的爬取不到 后面有时间就改    
+因为PubMed的Url命名中会把标题中包含的标点替换成特定字符  
+我又没找到对应标  
+所以32个字符只能一个一个试  
+但是我又懒  
+所以有弄出来的可以发我一下嘿嘿  
